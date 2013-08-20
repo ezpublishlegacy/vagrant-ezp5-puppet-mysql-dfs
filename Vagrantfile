@@ -2,21 +2,10 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config| 
-  # All Vagrant configuration is done here. The most common configuration
-  # options are documented and commented below. For a complete reference,
-  # please see the online documentation at vagrantup.com.
-
-  # Every Vagrant virtual environment requires a box to build off of.
-
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
   # config.vm.box_url = "http://domain.com/path/to/above.box"
   config.vm.box_url = "http://puppet-vagrant-boxes.puppetlabs.com/centos-64-x64-vbox4210.box"
-
-  # Create a forwarded port mapping which allows access to a specific port
-  # within the machine from a port on the host machine. In the example below,
-  # accessing "localhost:8080" will access port 80 on the guest machine.
-  config.vm.network :forwarded_port, guest: 80, host: 8080
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
@@ -51,10 +40,14 @@ Vagrant.configure("2") do |config|
 
 
   config.vm.define :web1 do |web_config|
+    # Create a forwarded port mapping which allows access to a specific port
+    # within the machine from a port on the host machine. In the example below,
+    # accessing "localhost:8080" will access port 80 on the guest machine.
+    web_config.vm.network :forwarded_port, guest: 80, host: 8080
     web_config.vm.box = "ezdfs1.ezp5"
     web_config.vm.hostname = "ezdfs1.ezp5.vagrant"
     web_config.vm.provider :virtualbox do |vb|
-      vb.customize ["modifyvm", :id, "--memory", "1024"]
+      vb.customize ["modifyvm", :id, "--memory", "512"]
     end
     web_config.vm.provision :puppet do |puppet|
       puppet.manifests_path = "manifests"
@@ -66,10 +59,14 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define :web2 do |web_config|
+    # Create a forwarded port mapping which allows access to a specific port
+    # within the machine from a port on the host machine. In the example below,
+    # accessing "localhost:8080" will access port 80 on the guest machine.
+    web_config.vm.network :forwarded_port, guest: 80, host: 8081 
     web_config.vm.box = "ezdfs2.ezp5"
     web_config.vm.hostname = "ezdfs2.ezp5.vagrant"
     web_config.vm.provider :virtualbox do |vb|
-      vb.customize ["modifyvm", :id, "--memory", "1024"]
+      vb.customize ["modifyvm", :id, "--memory", "512"]
     end
     web_config.vm.provision :puppet do |puppet|
       puppet.manifests_path = "manifests"
@@ -82,7 +79,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define :db do |db_config|
     db_config.vm.provider :virtualbox do |vb|
-      vb.customize ["modifyvm", :id, "--memory", "1024"]
+      vb.customize ["modifyvm", :id, "--memory", "512"]
     end
     db_config.vm.box = "db.ezp5"
     db_config.vm.hostname = "db.ezp5.vagrant"
@@ -91,6 +88,4 @@ Vagrant.configure("2") do |config|
       puppet.manifest_file  = "base_db.pp"
     end
   end
-
-
 end

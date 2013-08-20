@@ -15,7 +15,7 @@ Prototype development machine for eZDFS for eZ Publish 5.x, provisioned with Pup
 
 ## Requirements:
 
-- Vagrant (http://vagrantup.com)
+- Vagrant (http://vagrantup.com/)
 - VirtualBox (https://www.virtualbox.org/) or VMWare (http://www.vmware.com/)
 
 ## Getting started:
