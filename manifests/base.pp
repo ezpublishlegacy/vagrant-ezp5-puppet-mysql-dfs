@@ -10,6 +10,35 @@ include prepareezpublish
 include motd
 include addhosts
 include addtostartup
+include nfs
+
+class nfs {
+    $neededpackages = ["nfs-utils", "nfs-utils-lib"]
+    package { $neededpackages:
+      ensure => installed,
+    } ~>
+    file { "/etc/sysconfig/nfs":
+      ensure => file,
+      content => template("/tmp/vagrant-puppet/manifests/nfs/nfs.erb"),
+      owner   => 'root',
+      group   => 'root',
+      mode    => '644',     
+    } ~>
+    file { "/etc/exports":
+      ensure => file,
+      content => template("/tmp/vagrant-puppet/manifests/nfs/exports.erb"),
+      owner   => 'root',
+      group   => 'root',
+      mode    => '644', 
+    } ~>
+    file { "/mnt/ezdfs":
+      ensure => "directory",
+      owner  => "vagrant",
+      group  => "vagrant",
+      mode   => '777',  
+    } 
+}
+
 
 class ntpd {
     package { "ntpdate.x86_64": 
@@ -31,7 +60,7 @@ class motd {
 }
 
 class apachephp {
-    $neededpackages = [ "httpd", "php", "php-cli", "php-gd" ,"php-mysql", "php-pear", "php-xml", "php-mbstring", "php-pecl-apc", "php-process", "curl.x86_64" ]
+    $neededpackages = [ "httpd", "php", "php-cli", "php-gd" ,"php-mysql", "php-pear", "php-xml", "php-mbstring", "php-pecl-apc", "php-process", "curl.x86_64", "mysql" ]
     package { $neededpackages:
         ensure => present,
     } ~>
@@ -71,23 +100,13 @@ class imagick {
 }
 
 class apc {
-    $neededpackages = [ "php-devel", "httpd-devel", "pcre-devel.x86_64" ]
+    $neededpackages = [ "php-devel", "httpd-devel", "pcre-devel.x86_64", "php-pecl-apc.x86_64" ]
     package { $neededpackages:
       ensure => installed
-    }
-    exec    { "install apc":
-      command => "pear install pecl/apc",
-      path    => "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/vagrant/bin",
-      require => Package["php-pear", "httpd"],
-      returns => [ 0, 1, '', ' ']
-    }
+    } ~>
     file    {'/etc/php.d/apc.ini':
       ensure  => file,
       content => template('/tmp/vagrant-puppet/manifests/php/apc.ini.erb'),
-      require => Package["php-pear", "httpd"],
-      owner   => 'root',
-      group   => 'root',
-      mode    => '644',
     }
 }
 
