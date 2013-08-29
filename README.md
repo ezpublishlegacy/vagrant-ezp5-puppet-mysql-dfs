@@ -39,9 +39,15 @@ MySQL:
 Apache/httpd: www root: /var/www/html
 
 eZ Publish 5 Project:
-  hostnames: ezdfs1.ezp5.vagrant and ezdfs2.ezp5.vagrant
-  ip: 10.0.5.2 and 10.0.5.3
-  location: /var/www/html/ezpublish5
+  hostnames: 
+            - http://ezdfs1.ezp5.vagrant:8080, and 
+            - http://ezdfs2.ezp5.vagrant:8081
+  ips: 
+            - 10.0.5.2, and 
+            - 10.0.5.3
+  location: 
+            - /var/www/html/ezpublish5
+
   environment: dev or prod, depending on the choosen configuration
 ```
 
