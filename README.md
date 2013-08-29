@@ -22,8 +22,8 @@ Prototype development machine for eZDFS for eZ Publish 5.x, provisioned with Pup
 
 - Clone this project to a directory 
 - Run `$ vagrant up` from the terminal
-- Wait (the first time will take a few minutes, as the base box is downloaded, and required packages are installed for the first time), get some coffee.
-- Done! `$ vagrant ssh` to SSH into your newly created machine. The MOTD contains details on the database, hostnames, etc.
+- Wait (the first time will take a few minutes, as the base boxes are downloaded, and required packages are installed for the first time), get some coffee, on in this case lunch ;).
+- Done! `$ ssh vagrant@10.0.5.x` to SSH into your newly created machines. The MOTD contains details on the database, hostnames, etc.
 - By default Xdebug is enable, if you want to disable it, go to line 69, and 99, of Vagrantfile comment it and uncomment line 66, and 96. Don't forget to run `$ vagrant up` after
 
 ## Environment Details:
@@ -44,6 +44,10 @@ eZ Publish 5 Project:
   location: /var/www/html/ezpublish5
   environment: dev or prod, depending on the choosen configuration
 ```
+
+## KNOWNED ISSUES
+
+When you do vagrant up don't choose eth0, since this will result on the error /sbin/ifup eth1 2> /dev/null. This issue has already been reported https://github.com/mitchellh/vagrant/issues/1777
 
 ## COPYRIGHT
 Copyright (C) 1999-2013 eZ Systems AS. All rights reserved.
