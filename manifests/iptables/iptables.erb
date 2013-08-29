@@ -21,10 +21,14 @@
 -A INPUT -m state --state NEW -m tcp -p tcp --dport 9000 -j ACCEPT
 
 # NFS
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 111 -j ACCEPT
+-A INPUT -m state --state NEW -m udp -p udp --dport 111 -j ACCEPT
 -A INPUT -m state --state NEW -m tcp -p tcp --dport 662 -j ACCEPT
 -A INPUT -m state --state NEW -m udp -p udp --dport 662 -j ACCEPT
 -A INPUT -m state --state NEW -m tcp -p tcp --dport 892 -j ACCEPT
 -A INPUT -m state --state NEW -m udp -p udp --dport 892 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 2049 -j ACCEPT
+-A INPUT -m state --state NEW -m udp -p udp --dport 2049 -j ACCEPT
 -A INPUT -m state --state NEW -m tcp -p tcp --dport 32803 -j ACCEPT
 -A INPUT -m state --state NEW -m udp -p udp --dport 32803 -j ACCEPT
 -A INPUT -m state --state NEW -m tcp -p tcp --dport 32769 -j ACCEPT

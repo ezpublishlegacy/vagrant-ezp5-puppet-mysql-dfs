@@ -13,7 +13,7 @@ include addtostartup
 include nfs_1
 
 class nfs_1 {
-    $neededpackages = ["nfs-utils", "nfs-utils-lib"]
+    $neededpackages = ["nfs-utils", "nfs-utils-lib", "rpcbind"]
     package { $neededpackages:
       ensure => installed,
     } ~>
@@ -206,7 +206,8 @@ class addtostartup {
     } 
     exec    { "add rpcbind to startup":
       command => "/sbin/chkconfig rpcbind on",
-      path    => "/usr/local/bin/:/bin/"
+      path    => "/usr/local/bin/:/bin/",
+      require => Package["rpcbind"]
     } ~>
     exec    { "add nfs to startup":
       command => "/sbin/chkconfig nfs on",
