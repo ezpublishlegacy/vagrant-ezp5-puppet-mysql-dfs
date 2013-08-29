@@ -4,6 +4,7 @@ include db
 include createdb
 include addhosts
 include addtostartup
+include firewall
 
 class ntpd {
     package { "ntpdate.x86_64": 
@@ -46,7 +47,7 @@ class db {
 
 class createdb {
     exec { "create-ezp-db":
-      command => "/usr/bin/mysql -uroot -e \"create database ezp character set utf8; grant all on ezp.* to ezp@% identified by 'ezp';grant all on ezp.* to ezp@'10.0.5.2' identified by 'ezp';grant all on ezp.* to ezp@'10.0.5.3' identified by 'ezp';\"",
+      command => "/usr/bin/mysql -uroot -e \"create database ezp character set utf8; grant all on ezp.* to ezp@'localhost' identified by 'ezp';grant all on ezp.* to ezp@'10.0.5.2' identified by 'ezp';grant all on ezp.* to ezp@'10.0.5.3' identified by 'ezp';grant all on ezp.* to ezp@'10.0.5.4' identified by 'ezp';\"",
       require => Service["mysqld"],
       returns => [ 0, 1, '', ' ']
     }
@@ -59,6 +60,20 @@ class addhosts {
       owner   => 'root',
       group   => 'root',
       mode    => '644',
+    }
+}
+
+class firewall {
+    file    {'/etc/sysconfig/iptables':
+      ensure  => file,
+      content => template('/tmp/vagrant-puppet/manifests/iptables/iptables.erb'),
+      owner   => 'root',
+      group   => 'root',
+      mode    => '600',
+    }
+    service { iptables:
+      ensure => running,
+      subscribe => File["/etc/sysconfig/iptables"],
     }
 }
 
