@@ -66,7 +66,7 @@ Vagrant.configure("2") do |config|
       # puppet.manifest_file  = "base_xdebug.pp"
       # If you want to use the version that doesn't include xdebug and the dev environment in virtualhosts file
       # comment the upper line, and un-comment the lower one.
-      puppet.manifest_file  = "base.pp"
+      puppet.manifest_file  = "base_ezdfs1.pp"
     end
   end
 
@@ -96,7 +96,7 @@ Vagrant.configure("2") do |config|
       # puppet.manifest_file  = "base_xdebug.pp"
       # If you want to use the version that doesn't include xdebug and the dev environment in virtualhosts file
       # comment the upper line, and un-comment the lower one.
-      puppet.manifest_file  = "base.pp"
+      puppet.manifest_file  = "base_ezdfs2.pp"
     end
   end
 

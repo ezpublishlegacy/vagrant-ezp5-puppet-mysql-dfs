@@ -10,9 +10,9 @@ include prepareezpublish
 include motd
 include addhosts
 include addtostartup
-include nfs
+include nfs_2
 
-class nfs {
+class nfs_2 {
     $neededpackages = ["nfs-utils", "nfs-utils-lib"]
     package { $neededpackages:
       ensure => installed,
@@ -24,23 +24,23 @@ class nfs {
       group   => 'root',
       mode    => '644',     
     } ~>
-    file { "/etc/exports":
-      ensure => file,
-      content => template("/tmp/vagrant-puppet/manifests/nfs/exports.erb"),
-      owner   => 'root',
-      group   => 'root',
-      mode    => '644', 
-    } ~>
     file { "/mnt/ezdfs":
       ensure => "directory",
       owner  => "vagrant",
       group  => "vagrant",
       mode   => '777',  
     } ~>
+    file { "/etc/fstab":
+      ensure => file,
+      content => template('/tmp/vagrant-puppet/manifests/fstab/fstab.erb'),
+      owner   => 'root',
+      group   => 'root',
+      mode    => '644',       
+    } ~>
     service { "rpcbind":
       enable => true,
       ensure => running,
-    }
+    } ~>
     service { "nfs":
       enable => true,
       ensure => running,
@@ -50,7 +50,6 @@ class nfs {
       ensure => running,
     }
 }
-
 
 class ntpd {
     package { "ntpdate.x86_64": 
@@ -204,5 +203,19 @@ class addtostartup {
       command => "/sbin/chkconfig httpd on",
       path    => "/usr/local/bin/:/bin/",
       require => Package["httpd", "php", "php-cli", "php-gd" ,"php-mysql", "php-pear", "php-xml", "php-mbstring", "php-pecl-apc", "php-process", "curl.x86_64"]
+    } 
+    exec    { "add rpcbind to startup":
+      command => "/sbin/chkconfig rpcbind on",
+      path    => "/usr/local/bin/:/bin/"
+    } ~>
+    exec    { "add nfs to startup":
+      command => "/sbin/chkconfig nfs on",
+      path    => "/usr/local/bin/:/bin/",
+      require => Package["nfs"]
+    } ~>
+    exec    { "add nfslock to startup":
+      command => "/sbin/chkconfig nfslock on",
+      path    => "/usr/local/bin/:/bin/",
+      require => Package["nfslock"]
     } 
 }
