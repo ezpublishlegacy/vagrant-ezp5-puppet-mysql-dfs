@@ -59,8 +59,8 @@
         RewriteRule ^/api/[^/]+/v1/ /index_rest.php [L]
  
         # If using cluster, uncomment the following two lines:
-        #RewriteRule ^/var/([^/]+/)?storage/images(-versioned)?/.* /index_cluster.php [L]
-        #RewriteRule ^/var/([^/]+/)?cache/(texttoimage|public)/.* /index_cluster.php [L]
+        RewriteRule ^/var/([^/]+/)?storage/images(-versioned)?/.* /index_cluster.php [L]
+        RewriteRule ^/var/([^/]+/)?cache/(texttoimage|public)/.* /index_cluster.php [L]
  
         RewriteRule ^/var/([^/]+/)?storage/images(-versioned)?/.* - [L]
         RewriteRule ^/var/([^/]+/)?cache/(texttoimage|public)/.* - [L]
