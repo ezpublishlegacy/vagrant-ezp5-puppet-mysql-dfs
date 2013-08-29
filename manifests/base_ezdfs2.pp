@@ -48,11 +48,7 @@ class nfs_2 {
     service { "nfslock":
       enable => true,
       ensure => running,
-    } ~>
-    exec { "mount":
-      command => "/bin/mount 10.0.5.2:/mnt/ezdfs /mnt/ezdfs",
-      path => "/usr/bin:/usr/sbin:/bin:/usr/local/bin",
-    }
+    } 
 }
 
 class ntpd {
