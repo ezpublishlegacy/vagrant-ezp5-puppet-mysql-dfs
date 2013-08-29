@@ -37,10 +37,14 @@ class nfs {
       group  => "vagrant",
       mode   => '777',  
     } ~>
+    service { "rpcbind":
+      enable => true,
+      ensure => running,
+    }
     service { "nfs":
       enable => true,
       ensure => running,
-    } 
+    } ~>
     service { "nfslock":
       enable => true,
       ensure => running,
