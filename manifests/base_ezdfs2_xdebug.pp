@@ -11,6 +11,46 @@ include prepareezpublish
 include motd
 include addhosts
 include addtostartup
+include nfs_2
+
+class nfs_2 {
+    $neededpackages = ["nfs-utils", "nfs-utils-lib", "rpcbind"]
+    package { $neededpackages:
+      ensure => installed,
+    } ~>
+    file { "/etc/sysconfig/nfs":
+      ensure => file,
+      content => template("/tmp/vagrant-puppet/manifests/nfs/nfs.erb"),
+      owner   => 'root',
+      group   => 'root',
+      mode    => '644',     
+    } ~>
+    file { "/mnt/ezdfs":
+      ensure => "directory",
+      owner  => "vagrant",
+      group  => "vagrant",
+      mode   => '777',  
+    } ~>
+    file { "/etc/fstab":
+      ensure => file,
+      content => template('/tmp/vagrant-puppet/manifests/fstab/fstab.erb'),
+      owner   => 'root',
+      group   => 'root',
+      mode    => '644',       
+    } ~>
+    service { "rpcbind":
+      enable => true,
+      ensure => running,
+    } ~>
+    service { "nfs":
+      enable => true,
+      ensure => running,
+    } ~>
+    service { "nfslock":
+      enable => true,
+      ensure => running,
+    } 
+}
 
 class ntpd {
     package { "ntpdate.x86_64": 
@@ -32,7 +72,7 @@ class motd {
 }
 
 class apachephp {
-    $neededpackages = [ "httpd", "php", "php-cli", "php-gd" ,"php-mysql", "php-pear", "php-xml", "php-mbstring", "php-pecl-apc", "php-process", "curl.x86_64" ]
+    $neededpackages = [ "httpd", "php", "php-cli", "php-gd" ,"php-mysql", "php-pear", "php-xml", "php-mbstring", "php-pecl-apc", "php-process", "curl.x86_64", "mysql" ]
     package { $neededpackages:
         ensure => present,
     } ~>
@@ -82,23 +122,6 @@ class apc {
     }
 }
 
-class xdebug {
-    exec    { "install xdebug":
-      command => "pear install pecl/xdebug",
-      path    => "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/vagrant/bin",
-      require => Package['php-pear'],
-      returns => [ 0, 1, '', ' ']
-    }
-    file    {'/etc/php.d/xdebug.ini':
-      ensure  => file,
-      content => template('/tmp/vagrant-puppet/manifests/php/xdebug.ini.erb'),
-      owner   => 'root',
-      group   => 'root',
-      mode    => '644',
-      require => Package["php"],
-    }
-}
-
 class ezfind {
     package { "java-1.6.0-openjdk.x86_64":
       ensure => installed
@@ -135,6 +158,23 @@ class firewall {
     service { iptables:
       ensure => running,
       subscribe => File["/etc/sysconfig/iptables"],
+    }
+}
+
+class xdebug {
+    exec    { "install xdebug":
+      command => "pear install pecl/xdebug",
+      path    => "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/home/vagrant/bin",
+      require => Package['php-pear'],
+      returns => [ 0, 1, '', ' ']
+    }
+    file    {'/etc/php.d/xdebug.ini':
+      ensure  => file,
+      content => template('/tmp/vagrant-puppet/manifests/php/xdebug.ini.erb'),
+      owner   => 'root',
+      group   => 'root',
+      mode    => '644',
+      require => Package["php"],
     }
 }
 
@@ -181,15 +221,20 @@ class addtostartup {
       command => "/sbin/chkconfig httpd on",
       path    => "/usr/local/bin/:/bin/",
       require => Package["httpd", "php", "php-cli", "php-gd" ,"php-mysql", "php-pear", "php-xml", "php-mbstring", "php-pecl-apc", "php-process", "curl.x86_64"]
-    } ~>
-    exec    { "add mysql to startup":
-      command => "/sbin/chkconfig --add mysqld",
+    } 
+    exec    { "add rpcbind to startup":
+      command => "/sbin/chkconfig rpcbind on",
       path    => "/usr/local/bin/:/bin/",
-      require => Package["httpd", "php", "php-cli", "php-gd" ,"php-mysql", "php-pear", "php-xml", "php-mbstring", "php-pecl-apc", "php-process", "curl.x86_64"]
+      require => Package["rpcbind"]
     } ~>
-    exec    { "add mysql":
-      command => "/sbin/chkconfig mysqld on",
+    exec    { "add nfs to startup":
+      command => "/sbin/chkconfig nfs on",
       path    => "/usr/local/bin/:/bin/",
-      require => Package["httpd", "php", "php-cli", "php-gd" ,"php-mysql", "php-pear", "php-xml", "php-mbstring", "php-pecl-apc", "php-process", "curl.x86_64"]
-    }
+      require => Package["nfs-utils"]
+    } ~>
+    exec    { "add nfslock to startup":
+      command => "/sbin/chkconfig nfslock on",
+      path    => "/usr/local/bin/:/bin/",
+      require => Package["nfs-utils"]
+    } 
 }
