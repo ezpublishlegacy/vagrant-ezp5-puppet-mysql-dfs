@@ -211,11 +211,11 @@ class addtostartup {
     exec    { "add nfs to startup":
       command => "/sbin/chkconfig nfs on",
       path    => "/usr/local/bin/:/bin/",
-      require => Package["nfs"]
+      require => Package["nfs-utils"]
     } ~>
     exec    { "add nfslock to startup":
       command => "/sbin/chkconfig nfslock on",
       path    => "/usr/local/bin/:/bin/",
-      require => Package["nfslock"]
+      require => Package["nfs-utils"]
     } 
 }
