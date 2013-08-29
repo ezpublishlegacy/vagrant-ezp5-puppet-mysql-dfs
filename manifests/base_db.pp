@@ -46,7 +46,7 @@ class db {
 
 class createdb {
     exec { "create-ezp-db":
-      command => "/usr/bin/mysql -uroot -e \"create database ezp character set utf8; grant all on ezp.* to ezp@% identified by 'ezp';\"",
+      command => "/usr/bin/mysql -uroot -e \"create database ezp character set utf8; grant all on ezp.* to ezp@% identified by 'ezp';grant all on ezp.* to ezp@'10.0.5.2' identified by 'ezp';grant all on ezp.* to ezp@'10.0.5.3' identified by 'ezp';\"",
       require => Service["mysqld"],
       returns => [ 0, 1, '', ' ']
     }

@@ -36,7 +36,15 @@ class nfs {
       owner  => "vagrant",
       group  => "vagrant",
       mode   => '777',  
+    } ~>
+    service { "nfs":
+      enable => true,
+      ensure => running,
     } 
+    service { "nfslock":
+      enable => true,
+      ensure => running,
+    }
 }
 
 
